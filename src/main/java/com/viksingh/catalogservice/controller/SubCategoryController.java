@@ -24,7 +24,7 @@ public class SubCategoryController {
     }
 
 
-    @PostMapping
+    @PostMapping("/addSubCategory")
     public ResponseEntity<ResponseDTO> saveCategory(@RequestBody
                                                     @NotNull(message = "Input must not be NULL")
                                                     @Valid final SubCategoryDTO subCategoryDTO, HttpServletRequest httpServletRequest){

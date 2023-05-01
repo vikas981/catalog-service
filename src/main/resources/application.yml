@@ -1,5 +1,7 @@
 server:
   port: 8087
+  servlet:
+    context-path: /catalog-service
 
 spring:
   application:
@@ -14,6 +16,11 @@ spring:
       ddl-auto: update
 
 
-
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      default-zone: http://localhost:8761/eureka
 
 

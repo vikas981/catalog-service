@@ -26,7 +26,7 @@ public class ProductController {
     }
 
 
-    @PostMapping
+    @PostMapping("/addProduct")
     public ResponseEntity<ResponseDTO> saveCategory(@RequestBody
                                                     @NotNull(message = "Input must not be NULL")
                                                     @Valid final ProductRequestDTO request, HttpServletRequest httpServletRequest){
@@ -57,7 +57,7 @@ public class ProductController {
     }
 
 
-    @PostMapping("/variants")
+    @PostMapping("/addVariants")
     public ResponseEntity<ResponseDTO> saveCategory(@RequestBody
                                                     @NotNull(message = "Input must not be NULL")
                                                     @Valid final ProductVariantRequestDTO request , HttpServletRequest httpServletRequest){
@@ -66,7 +66,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/metadata")
+    @PostMapping("/addMetadata")
     public ResponseEntity<ResponseDTO> saveCategory(@RequestBody
                                                     @NotNull(message = "Input must not be NULL")
                                                     @Valid final ProductMetadataRequestDTO request , HttpServletRequest httpServletRequest){
@@ -75,7 +75,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping
+    @PostMapping("/updateProduct")
     public ResponseEntity<ResponseDTO> updateProduct(@RequestBody
                                                     @NotNull(message = "Input must not be NULL")
                                                     @Valid final ProductUpdateRequestDTO request, HttpServletRequest httpServletRequest){

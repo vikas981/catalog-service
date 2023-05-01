@@ -23,7 +23,7 @@ public class CategoryController {
     }
 
 
-    @PostMapping
+    @PostMapping("/addCategory")
     public ResponseEntity<ResponseDTO> saveCategory(@RequestBody
                                                     @NotNull(message = "Input must not be NULL")
                                                     @Valid final CategoryDTO categoryDto, HttpServletRequest httpServletRequest){
