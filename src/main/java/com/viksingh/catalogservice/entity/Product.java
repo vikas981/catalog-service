@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @Table(name = "products")
 @Entity
-public class Product {
+public class Product extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

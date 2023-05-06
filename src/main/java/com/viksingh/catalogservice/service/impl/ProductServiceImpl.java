@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,8 +58,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseDTO saveProduct(ProductRequestDTO productDTO, HttpServletRequest httpServletRequest) {
         Optional<SubCategory> subCategory = subCategoryDAO.findById(productDTO.getSubCategory().getId());
+        String userName = httpServletRequest.getHeader("userName");
         if(subCategory.isPresent()){
-            productDAO.save(convertToEntity(productDTO,subCategory.get()));
+            productDAO.save(convertToEntity(productDTO,subCategory.get(),userName));
             return ApiResponse.response(HttpStatus.OK,"Product added successfully.");
         }
         return ApiResponse.response(HttpStatus.BAD_REQUEST,"Product not saved.");
@@ -66,7 +68,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseDTO fetchProductsBySubcategoryId(Integer subcategoryId, Integer pageNo, Integer pageSize, String sortBy) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Sort sort;
+        if(sortBy.contains(",")){
+            String [] sortArray = sortBy.split(",");
+            sort = Sort.by(Sort.Direction.fromString(sortArray[1]),sortArray[0]);
+        }else {
+            sort = Sort.by(sortBy);
+        }
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Product> pagedResult = productDAO.findProductBySubCategoryId(subcategoryId,pageable);
         if(pagedResult.hasContent()) {
              List<ProductResponseDTO> products = convertToDTO(pagedResult.getContent());
@@ -104,14 +113,19 @@ public class ProductServiceImpl implements ProductService {
     public ResponseDTO updateProduct(ProductUpdateRequestDTO request, HttpServletRequest httpServletRequest) {
         Product product = productDAO.findById(request.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException(String.format(PRODUCT_NOT_FOUND_MSG, request.getProductId())));
-            product.setAdditionalImageLinks(request.getAdditionalImageLinks());
-            product.setPrice(request.getPrice());
-            product.setSellingPrice(request.getSellingPrice());
-            product.setCurrency(request.getCurrency());
-            product.setStatus(request.getStatus());
-            product.setImageUrl(request.getImageUrl());
-            productDAO.save(product);
-            return ApiResponse.response(HttpStatus.OK,"Product data updated successfully.");
+        String userName = httpServletRequest.getHeader("userName");
+        product.setAdditionalImageLinks(request.getAdditionalImageLinks());
+        product.setPrice(request.getPrice());
+        product.setSellingPrice(request.getSellingPrice());
+        product.setCurrency(request.getCurrency());
+        product.setStatus(request.getStatus());
+        product.setImageUrl(request.getImageUrl());
+        product.setCreatedAt(LocalDateTime.now());
+        product.setCreated(userName);
+        product.setUpdatedAt(LocalDateTime.now());
+        product.setUpdated(userName);
+        productDAO.save(product);
+        return ApiResponse.response(HttpStatus.OK, "Product data updated successfully.");
     }
 
     @Override
@@ -160,7 +174,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    private Product convertToEntity(ProductRequestDTO productDTO, SubCategory subCategory) {
+    private Product convertToEntity(ProductRequestDTO productDTO, SubCategory subCategory,String userName) {
         Product product = new Product();
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
@@ -169,6 +183,10 @@ public class ProductServiceImpl implements ProductService {
         product.setQuantity(productDTO.getQuantity());
         product.setStatus(productDTO.getStatus());
         product.setSubCategory(subCategory);
+        product.setCreatedAt(LocalDateTime.now());
+        product.setCreated(userName);
+        product.setUpdatedAt(LocalDateTime.now());
+        product.setUpdated(userName);
         return product;
     }
 }

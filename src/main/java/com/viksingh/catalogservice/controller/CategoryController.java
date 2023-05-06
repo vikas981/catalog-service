@@ -24,8 +24,7 @@ public class CategoryController {
 
 
     @PostMapping("/addCategory")
-    public ResponseEntity<ResponseDTO> saveCategory(@RequestBody
-                                                    @NotNull(message = "Input must not be NULL")
+    public ResponseEntity<ResponseDTO> saveCategory(@RequestBody @NotNull(message = "Input must not be NULL")
                                                     @Valid final CategoryDTO categoryDto, HttpServletRequest httpServletRequest){
         log.info("*** Request received for Add Category ***");
         ResponseDTO response = categoryService.saveCategory(categoryDto,httpServletRequest);

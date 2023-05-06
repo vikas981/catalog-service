@@ -16,7 +16,6 @@ import java.util.List;
 @Data
 @Builder
 public class CategoryDTO {
-
     private Integer id;
     private String name;
     private String imageUrl;
@@ -25,6 +24,4 @@ public class CategoryDTO {
     private List<SubCategory> subCategories;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Product> products;
-
-
 }
